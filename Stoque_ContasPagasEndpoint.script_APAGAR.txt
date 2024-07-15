@@ -1785,6 +1785,7 @@ public JSONArray run(InoutLogger logger) throws Exception {
 
                                         if (memFile.getStringField(idataMovimento).equals("")) continue;
 
+                                        //captura de data atualizada - Pedro
                                         try{
                                             dataMovimento     = getCampoDate(memFile.getStringFieldRemoveEspCharsUpper(idataMovimento), "dd/MM/yyyy");
                                             dataLote          = getCampoDate(dataMovimento, "", "yyyy-MM");
