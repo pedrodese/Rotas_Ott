@@ -600,10 +600,13 @@ public JSONArray run(InoutLogger logger) throws Exception {
 									
 									if (tipoPlanilha.contains("EXPORTACAOENTRADA")) {
 										if (inomePortador >= 0) nomePortador	= memFile.getStringFieldRemoveEspCharsUpper(inomePortador).replaceAll("\"","");
-									}	
-									logger.logInfo("DEU BOM AQQ " + nomePortador);
+									}
+
+									logger.logInfo("DEU BOM AQQ " + idataMovimento);
 
 									if(idataMovimento >= 0) {
+
+                                        logger.logInfo("ENTROU IF IDATAMOV");
 
 										if (!memFile.getStringFieldRemoveEspCharsUpper(inomeOrigem).equals("") ) {
 											nomeOrigem   = memFile.getStringFieldRemoveEspCharsUpper(inomeOrigem).replaceAll("\"","");
@@ -624,16 +627,21 @@ public JSONArray run(InoutLogger logger) throws Exception {
 										try {
 											dataMovimento     = getCampoDate(memFile.getStringFieldRemoveEspCharsUpper(idataMovimento), "dd/MM/yyyy");
                                             dataLote          = getCampoDate(dataMovimento, "", "yyyy-MM");
+                                            logger.logInfo("DATA NO PRIMEIRO TRY -> " + dataMovimento);
 										} catch (Exception dt1) {
 											try {
 												Date dt = memFile.getDateField(idataMovimento, "dd/MM/yyyy");	// --- VERIFICAR
 												dataMovimento = DateUtil.dateToString(dt, "dd/MM/yyyy");
 												dataLote = DateUtil.dateToString(dt, "yyyy-MM");
+
+                                                logger.logInfo("DATA NO SEGUNDO TRY -> " + dataMovimento);
 											} catch (Exception dt2) {
 												try {
 													Date dt = memFile.getDateField(idataMovimento, "dd/MM/yyyy HH:mm:ss");	// --- VERIFICAR
 													dataMovimento = DateUtil.dateToString(dt, "dd/MM/yyyy");
 													dataLote = DateUtil.dateToString(dt, "yyyy-MM");
+
+                                                    logger.logInfo("DATA NO TERCEIRO TRY -> " + dataMovimento);
 												} catch (Exception dt2) {
 													try {
 														dataMovimento = memFile.getStringFieldRemoveEspCharsUpper(idataMovimento).replaceAll("\"","");
@@ -641,6 +649,8 @@ public JSONArray run(InoutLogger logger) throws Exception {
 														Date dt  = DateUtil.stringToDate(dataMovimento, "dd/MM/yyyy");
 														dataMovimento = DateUtil.dateToString(dt, "dd/MM/yyyy");
 														dataLote = DateUtil.dateToString(dt, "yyyy-MM");
+
+                                                        logger.logInfo("DATA NO QUARTO TRY -> " + dataMovimento);
 														
 													} catch (Exception dt2) { continue; }
 												}
@@ -1180,6 +1190,8 @@ public JSONArray run(InoutLogger logger) throws Exception {
 
             if(ttMov.tipoLancamento.contains("PAGAR") && ttMov.debitoCredito.contains("EXTRATO-CREDITO")) continue;
             if(ttMov.tipoLancamento.contains("RECEBER") && ttMov.debitoCredito.contains("EXTRATO-DEBITO")) continue;
+
+            logger.logInfo("DATA TTMOV -> " + ttMov.dataMovimento + "VALOR TTMOV -> " + ttMov.valorDocumento);
 
 			if (ttMov.tipoPlanilha.contains("MOVIMENTO")) {
 				String keyTr = ttMov.complemento05;
